@@ -1,1 +1,1 @@
-//= link_directory ../stylesheets/rails_mini_profiler .css
+//= link_tree ../stylesheets/rails_mini_profiler .css
