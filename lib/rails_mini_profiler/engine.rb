@@ -24,11 +24,15 @@ module RailsMiniProfiler
     end
 
     initializer 'rails_mini_profiler.assets' do |app|
+      js_root = root.join('app/javascript')
       app.config.assets.paths << root.join('app/assets/stylesheets')
-      app.config.assets.paths << root.join('app/javascript')
+      app.config.assets.paths << js_root
       app.config.assets.precompile += %w[rails_mini_profiler_manifest
-                                         rails_mini_profiler/rails-mini-profiler.css
-                                         rails_mini_profiler/application.js]
+                                         rails_mini_profiler/rails-mini-profiler.css]
+      # The importmap pins every file under app/javascript (pin_all_from on
+      # controllers/), and sprockets hosts raise AssetNotPrecompiledError for
+      # pinned files missing from the precompile list — so precompile them all.
+      app.config.assets.precompile += Dir.glob('rails_mini_profiler/**/*.js', base: js_root)
     end
 
     initializer 'rails_mini_profiler.importmap', after: 'importmap' do |app|
