@@ -7,6 +7,29 @@
   <meta name="turbo-cache-control" content="no-cache">
 
   <%= javascript_importmap_tags "application", importmap: RailsMiniProfiler.importmap %>
-  <%= stylesheet_link_tag "rails_mini_profiler/rails-mini-profiler",
-  "data-turbo-track": "reload" %>
+  <%#
+    Link each stylesheet through Rails' asset helpers instead of chaining them
+    with CSS @import in rails-mini-profiler.css. sprockets and propshaft rewrite
+    @import url() paths incompatibly (no single relative path resolves on both),
+    so we let asset_path build each digested URL, which works on either pipeline.
+  %>
+  <% %w[
+    rails_mini_profiler/rails-mini-profiler
+    rails_mini_profiler/flashes
+    rails_mini_profiler/flamegraph
+    rails_mini_profiler/profiled_requests
+    rails_mini_profiler/traces
+    rails_mini_profiler/components/profiled_request_table
+    rails_mini_profiler/components/buttons
+    rails_mini_profiler/components/input
+    rails_mini_profiler/components/navbar
+    rails_mini_profiler/components/pagination
+    rails_mini_profiler/components/page_header
+    rails_mini_profiler/components/dropdown
+    rails_mini_profiler/components/placeholder
+    rails_mini_profiler/components/trace
+    rails_mini_profiler/components/tooltip
+  ].each do |stylesheet| %>
+    <%= stylesheet_link_tag stylesheet, "data-turbo-track": "reload" %>
+  <% end %>
 </head>

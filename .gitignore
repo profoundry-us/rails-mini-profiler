@@ -107,6 +107,10 @@ bower.json
 # Ignore node_modules
 node_modules/
 
+# pnpm's content-addressable store (created in-repo when running the
+# Docker lint:css / assets recipes)
+.pnpm-store/
+
 # Ignore precompiled javascript packs
 /public/packs
 /public/packs-test
