@@ -7,7 +7,7 @@
 <% if Rails.application.config.database == :postgres %>
 default: &default
   adapter: postgresql
-  host: '127.0.0.1'
+  host: <%= ENV.fetch('DATABASE_HOST', '127.0.0.1') %>
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   username: dummy
   password: postgres

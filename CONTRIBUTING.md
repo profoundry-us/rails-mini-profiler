@@ -23,6 +23,40 @@ Create a fork of Rails Mini Profiler and clone it locally. Create a new branch f
 git checkout -b add-awesome-new-feature
 ```
 
+You can set up your environment either with [Docker](#with-docker-recommended) (recommended — nothing to install
+locally besides Docker) or [natively](#natively).
+
+#### With Docker (recommended)
+
+This uses the [LocoMotion Docker conventions](https://loco-motion-demo-staging.profoundry.us/guides/docker). You only
+need [Docker](https://www.docker.com/) and [`just`](https://github.com/casey/just) installed — no local Ruby or Node.
+
+```bash
+# Build the image (Ruby + Node + gems)
+just build
+
+# Run the full test suite (defaults to SQLite, like CI)
+just test
+
+# Run a single spec file
+just test spec/lib/rails_mini_profiler/middleware_spec.rb
+
+# Open a shell in the container to poke around
+just shell
+```
+
+Run `just` (or `just --list`) to see all recipes: `check` (specs + RuboCop), `lint`, `lint-js`, `console`, `server`,
+`assets`, and more. The repository is bind-mounted into the container, so code edits are picked up without rebuilding —
+only rerun `just build` when the `Gemfile` changes.
+
+To run the tests against PostgreSQL instead of SQLite, prefix the command with `DATABASE=postgres`:
+
+```bash
+DATABASE=postgres just test
+```
+
+#### Natively
+
 Setup RMP locally by executing:
 
 ```bash

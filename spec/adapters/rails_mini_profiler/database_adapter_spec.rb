@@ -7,6 +7,8 @@ module RailsMiniProfiler
     describe 'cast column' do
       context 'default' do
         it 'returns original column' do
+          allow(ActiveRecord::Base.connection).to receive(:adapter_name).and_return('SQLite')
+
           expect(described_class.cast_to_text(:column)).to equal(:column)
         end
       end

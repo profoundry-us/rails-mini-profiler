@@ -1,14 +1,33 @@
 services:
-  postgres:
-    image: postgres:latest
+  # Postgres is optional: the test suite and dummy app default to SQLite
+  # (ENV['DATABASE'] unset). Set DATABASE=postgres to use this service, e.g.
+  #   docker compose run --rm -e DATABASE=postgres app bundle exec rake spec
+  db:
+    image: postgres:15-bullseye
     environment:
       POSTGRES_USER: dummy
       POSTGRES_PASSWORD: postgres
     volumes:
       - postgres-data:/var/lib/postgresql/data
     ports:
-      - 5432:5432
+      - "5432:5432"
     restart: unless-stopped
+
+  # The development / test container for the engine. The whole repo is mounted
+  # so code changes are picked up live; gems are baked into the image.
+  app:
+    build: .
+    volumes:
+      - .:/home/app
+    environment:
+      # Host used by spec/dummy/config/database.yml when DATABASE=postgres.
+      DATABASE_HOST: db
+    ports:
+      - "3000:3000"
+    tty: true
+    stdin_open: true
+    depends_on:
+      - db
 
 volumes:
   postgres-data:
