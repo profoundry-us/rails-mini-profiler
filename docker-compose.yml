@@ -23,7 +23,11 @@ services:
       # Host used by spec/dummy/config/database.yml when DATABASE=postgres.
       DATABASE_HOST: db
     ports:
-      - "3000:3000"
+      # Host port -> container port. The dummy app always listens on 3000
+      # inside the container; set RMP_PORT in a .env file to change which
+      # localhost port it is published on (default 3300, since 3000 tends to
+      # collide with other local apps).
+      - "${RMP_PORT:-3300}:3000"
     tty: true
     stdin_open: true
     depends_on:

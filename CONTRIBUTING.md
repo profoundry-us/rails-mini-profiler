@@ -49,6 +49,10 @@ Run `just` (or `just --list`) to see all recipes: `check` (specs + RuboCop), `li
 `assets`, and more. The repository is bind-mounted into the container, so code edits are picked up without rebuilding —
 only rerun `just build` when the `Gemfile` changes.
 
+`just server` starts the dummy app at <http://localhost:3300>. The host port defaults to `3300` (3000 tends to collide
+with other local apps); to use a different one, create a `.env` file (gitignored, read automatically by Docker Compose)
+containing e.g. `RMP_PORT=3301`.
+
 To run the tests against PostgreSQL instead of SQLite, prefix the command with `DATABASE=postgres`:
 
 ```bash

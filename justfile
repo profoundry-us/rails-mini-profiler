@@ -71,7 +71,7 @@ rake *args:
 console:
     docker compose run --rm app bin/rails console
 
-# Start the dummy app at http://localhost:3000
+# Start the dummy app at http://localhost:3300 (set RMP_PORT in .env to change the host port)
 server:
     docker compose run --rm --service-ports app bin/rails server -b 0.0.0.0
 
