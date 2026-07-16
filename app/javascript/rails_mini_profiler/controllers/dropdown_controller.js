@@ -1,15 +1,15 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static targets = ["enable"];
+  static targets = ["button", "menu"];
 
-  enable() {
-    this.enableTarget.disabled = false;
+  toggle() {
+    this.menuTarget.classList.toggle("hidden");
   }
 
-  disable() {
-    this.enableTarget.disabled = true;
-  }
+  hide(event) {
+    if (this.element.contains(event.target)) return;
 
-  hide() {}
+    this.menuTarget.classList.add("hidden");
+  }
 }

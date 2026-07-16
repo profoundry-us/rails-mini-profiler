@@ -141,7 +141,7 @@
             params.fetch(:media_type, []).include?(media_type),
             class: "",
             data: {
-              target: "filters.filter",
+              "filters-target": "filter",
             } %>
             <%= media_type %>
           <% end %>
@@ -178,7 +178,7 @@
             params.fetch(:duration, []).include?(duration.to_s),
             class: "",
             data: {
-              target: "filters.filter",
+              "filters-target": "filter",
             } %>
             <%= "> #{duration / 100}ms" %>
           <% end %>

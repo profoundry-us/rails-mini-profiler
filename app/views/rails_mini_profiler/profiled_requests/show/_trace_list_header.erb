@@ -81,7 +81,7 @@
             params.fetch(:duration, []).include?(duration.to_s),
             class: "",
             data: {
-              target: "filters.filter",
+              "filters-target": "filter",
             } %>
             <%= "> #{formatted_duration(duration)}ms" %>
           <% end %>
@@ -120,7 +120,7 @@
             params.fetch(:allocations, []).include?(allocations.to_s),
             class: "",
             data: {
-              target: "filters.filter",
+              "filters-target": "filter",
             } %>
             <%= "> #{formatted_allocations(allocations)}" %>
           <% end %>
