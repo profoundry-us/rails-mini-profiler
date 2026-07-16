@@ -107,10 +107,39 @@ Rails Mini Profiler provides a wide array of configuration options. You can find
 | `enabled`                | `true` (dev)/ `false` (prod) | Whether or not RMP is enabled                                               |
 | `flamegraph_enabled`     | `true`                       | Should flamegraphs be recorded automatically?                               |
 | `flamegraph_sample_rate` | `0.5`                        | The flamegraph sample rate. How many snapshots per millisecond are created. |
+| `backtraces_enabled`     | `true`                       | Capture a backtrace for every trace. See [Tracers](#Tracers).               |
+| `tracers`                | see [Tracers](#Tracers)      | The list of enabled tracers.                                                |
 | `skip_paths`             | `[]`                         | An array of request paths that should not be profiled. Regex allowed.       |
 | `storage`                | `Storage.new`                | Storage configuration. See [Storage](#Storage).                             |
 | `ui`                     | `UserInterface.new`          | UI configuration. See [UI](#UI).                                            |
 | `user_provider`          | `Rack::Request.new(env).ip`  | How to identify users. See [Authorization](#Authorization)                  |
+
+### Tracers
+
+Rails Mini Profiler builds the trace waterfall from a set of tracers, each subscribing to `ActiveSupport::Notifications` events. The enabled tracers default to:
+
+```ruby
+config.tracers = %i[controller instantiation sequel view view_component rmp]
+```
+
+#### ViewComponent
+
+The `view_component` tracer records [ViewComponent](https://viewcomponent.org/) renders (`render.view_component`) so component `.rb` renders show up in the waterfall alongside partials instead of hiding inside them.
+
+ViewComponent instrumentation is **off by default**, and Rails Mini Profiler can't enable it for you — turn it on in the host app:
+
+```ruby
+# config/application.rb
+config.view_component.instrumentation_enabled = true
+# ViewComponent 3.x emits the modern `render.view_component` event name only with:
+config.view_component.use_deprecated_instrumentation_name = false
+```
+
+Without ViewComponent (or with instrumentation off) the tracer is simply idle. Apps that don't use ViewComponent can drop it from `config.tracers`.
+
+#### Backtraces
+
+Every trace captures a backtrace (used by the "source" section of the trace detail view). On component-heavy pages this capture (`Kernel#caller` plus the backtrace cleaner) adds measurable overhead that can skew the reported timings. Set `config.backtraces_enabled = false` for more honest numbers; the trace detail view simply omits the backtrace section.
 
 ### Storage
 

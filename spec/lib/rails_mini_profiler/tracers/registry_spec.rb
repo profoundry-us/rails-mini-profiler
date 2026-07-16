@@ -15,6 +15,7 @@ module RailsMiniProfiler
             'instantiation.active_record' => RailsMiniProfiler::Tracers::InstantiationTracer,
             'process_action.action_controller' => RailsMiniProfiler::Tracers::ControllerTracer,
             'render_partial.action_view' => RailsMiniProfiler::Tracers::ViewTracer,
+            'render.view_component' => RailsMiniProfiler::Tracers::ViewComponentTracer,
             'rails_mini_profiler.total_time' => RailsMiniProfiler::Tracers::RmpTracer,
             'render_template.action_view' => RailsMiniProfiler::Tracers::ViewTracer,
             'sql.active_record' => RailsMiniProfiler::Tracers::SequelTracer
@@ -31,6 +32,7 @@ module RailsMiniProfiler
             'rails_mini_profiler.total_time' => RailsMiniProfiler::RmpTracePresenter,
             'render_partial.action_view' => RailsMiniProfiler::RenderPartialTracePresenter,
             'render_template.action_view' => RailsMiniProfiler::RenderTemplateTracePresenter,
+            'render.view_component' => RailsMiniProfiler::ViewComponentTracePresenter,
             'sql.active_record' => RailsMiniProfiler::SequelTracePresenter
           }
 

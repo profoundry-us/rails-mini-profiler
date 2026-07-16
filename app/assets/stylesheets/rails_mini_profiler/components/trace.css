@@ -39,6 +39,10 @@
   background: linear-gradient(to top right, var(--blue-500), var(--blue-400));
 }
 
+.view-component-trace .trace-bar {
+  background: linear-gradient(to top right, var(--purple-500), var(--purple-400));
+}
+
 .trace-name {
   overflow: hidden;
   box-sizing: border-box;

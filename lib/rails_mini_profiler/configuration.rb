@@ -55,7 +55,7 @@ module RailsMiniProfiler
       @logger = RailsMiniProfiler::Logger.new(Rails.logger)
       @skip_paths = []
       @storage = Storage.new
-      @tracers = %i[controller instantiation sequel view rmp]
+      @tracers = %i[controller instantiation sequel view view_component rmp]
       @ui = UserInterface.new
       @user_provider = proc { |env| Rack::Request.new(env).ip }
     end
