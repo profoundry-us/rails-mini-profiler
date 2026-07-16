@@ -14,6 +14,10 @@ module RailsMiniProfiler
   #   @return [Boolean] if Flamegraph recording is enabled
   # @!attribute flamegraph_sample_rate
   #   @return [Float] the sample rate in samples per millisecond
+  # @!attribute backtraces_enabled
+  #   @return [Boolean] if a backtrace is captured for every trace. Capturing backtraces adds measurable
+  #     overhead (Kernel#caller plus the backtrace cleaner) that skews timings on high-volume pages. Disable
+  #     to collect more honest numbers; the trace detail view simply omits the backtrace section.
   # @!attribute skip_paths
   #   @return [Array<String>] a list of regex patterns for paths to skip
   # @!attribute storage
@@ -30,6 +34,7 @@ module RailsMiniProfiler
     attr_accessor :enabled,
                   :flamegraph_enabled,
                   :flamegraph_sample_rate,
+                  :backtraces_enabled,
                   :skip_paths,
                   :storage,
                   :tracers,
@@ -46,6 +51,7 @@ module RailsMiniProfiler
       @enabled = proc { |_env| Rails.env.development? || Rails.env.test? }
       @flamegraph_enabled = true
       @flamegraph_sample_rate = 0.5
+      @backtraces_enabled = true
       @logger = RailsMiniProfiler::Logger.new(Rails.logger)
       @skip_paths = []
       @storage = Storage.new

@@ -26,6 +26,21 @@ module RailsMiniProfiler
           expect(subject.trace.start).to be_within(100).of(@event.time.to_f * 100)
           expect(subject.trace.finish).to be_within(100).of(@event.end.to_f * 100)
         end
+
+        it('captures a backtrace by default') do
+          allow(Rails.backtrace_cleaner).to receive(:clean).and_return(['app/foo.rb:1'])
+          expect(subject.trace.backtrace).to eq(['app/foo.rb:1'])
+        end
+
+        context('when backtraces are disabled') do
+          before { RailsMiniProfiler.configuration.backtraces_enabled = false }
+          after { RailsMiniProfiler.configuration.backtraces_enabled = true }
+
+          it('skips backtrace capture entirely and returns an empty array') do
+            expect(Rails.backtrace_cleaner).not_to receive(:clean)
+            expect(subject.trace.backtrace).to eq([])
+          end
+        end
       end
     end
   end

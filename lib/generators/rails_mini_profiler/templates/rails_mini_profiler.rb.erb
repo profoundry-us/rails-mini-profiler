@@ -10,6 +10,11 @@ RailsMiniProfiler.configure do |config|
   config.flamegraph_enabled = true
   # config.flamegraph_sample_rate = 0.5
 
+  # Capture a backtrace for every trace. This powers the "source" section of the trace detail view, but adds
+  # measurable overhead on high-volume pages that can skew the reported timings. Set to false for more honest
+  # numbers.
+  # config.backtraces_enabled = true
+
   # Configure endpoints to profile
   config.skip_paths = []
 

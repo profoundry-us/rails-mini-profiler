@@ -43,9 +43,19 @@ module RailsMiniProfiler
           finish: finish_time,
           duration: (event.duration.to_f * 100).to_i,
           allocations: event.allocations,
-          backtrace: Rails.backtrace_cleaner.clean(caller),
+          backtrace: capture_backtrace,
           payload: event.payload
         }
+      end
+
+      # Capturing a backtrace for every trace is expensive (Kernel#caller plus the backtrace cleaner's
+      # silencers) and dominates on high-volume pages, skewing the very timings we report. Skip it entirely
+      # when disabled — returning an empty array keeps the trace detail view (which does `backtrace.empty?`)
+      # happy while avoiding the `caller` call altogether.
+      def capture_backtrace
+        return [] unless RailsMiniProfiler.configuration.backtraces_enabled
+
+        Rails.backtrace_cleaner.clean(caller)
       end
     end
   end
