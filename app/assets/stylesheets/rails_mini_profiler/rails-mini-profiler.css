@@ -160,6 +160,7 @@ main {
   z-index: 1000;
   display: none;
   width: 600px;
+  box-sizing: border-box;
   flex-direction: column;
   padding: 1em;
   border: 1px solid var(--grey-200);
@@ -178,14 +179,19 @@ main {
   align-items: center;
   justify-content: space-between;
   padding-bottom: 1em;
+  gap: 0.5em;
 }
 
 .popover-description {
+  min-width: 0;
   padding: 0;
   margin: 0;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .popover-close {
+  flex-shrink: 0;
   padding: 0;
   background: transparent;
   color: var(--grey-400);

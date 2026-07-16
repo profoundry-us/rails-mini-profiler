@@ -4,7 +4,7 @@
 
   <div class="popover" data-popover-target="popover">
     <section class="popover-header">
-      <h1 class="popover-description"><%= trace.description %></h1>
+      <h1 class="popover-description"><%= break_opportunities(trace.description) %></h1>
       <button class="popover-close">x</button>
     </section>
     <section class="popover-body">
@@ -17,7 +17,7 @@
             data-controller="clipboard"
             data-clipboard-filter=".+?(?=:in)"
             data-clipboard-copied-message="Copied" >
-            <pre data-clipboard-target="source"><%= trace.backtrace %></pre>
+            <pre data-clipboard-target="source"><%= break_opportunities(trace.backtrace) %></pre>
             <button
               title="Copy to clipboard"
               type="button"
