@@ -12,14 +12,19 @@
     with CSS @import in rails-mini-profiler.css. sprockets and propshaft rewrite
     @import url() paths incompatibly (no single relative path resolves on both),
     so we let asset_path build each digested URL, which works on either pipeline.
+
+    Order matters: this reproduces the original @import cascade exactly. The
+    component parts load first and rails-mini-profiler.css loads last, so its
+    utility rules (e.g. `.hidden { display: none }`) win over same-specificity
+    component rules (e.g. `.dropdown-container { display: flex }`) — otherwise
+    every `.dropdown-container.hidden` menu would render open by default.
   %>
   <% %w[
-    rails_mini_profiler/rails-mini-profiler
     rails_mini_profiler/flashes
     rails_mini_profiler/flamegraph
+    rails_mini_profiler/components/profiled_request_table
     rails_mini_profiler/profiled_requests
     rails_mini_profiler/traces
-    rails_mini_profiler/components/profiled_request_table
     rails_mini_profiler/components/buttons
     rails_mini_profiler/components/input
     rails_mini_profiler/components/navbar
@@ -29,6 +34,7 @@
     rails_mini_profiler/components/placeholder
     rails_mini_profiler/components/trace
     rails_mini_profiler/components/tooltip
+    rails_mini_profiler/rails-mini-profiler
   ].each do |stylesheet| %>
     <%= stylesheet_link_tag stylesheet, "data-turbo-track": "reload" %>
   <% end %>
