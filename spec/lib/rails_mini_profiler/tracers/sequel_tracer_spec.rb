@@ -60,6 +60,29 @@ module RailsMiniProfiler
             expect(trace.payload).to eq(expected)
           end
         end
+
+        context('with raw-SQL positional binds') do
+          # `where("col = ?", value)` puts the raw values themselves in :binds, so each bind is a
+          # String/Integer/etc. that does not respond to #name (see issue #6).
+          let(:payload) do
+            {
+              name: 'name',
+              sql: 'select',
+              binds: ['someone@example.com', 42],
+              type_casted_binds: ['someone@example.com', 42]
+            }
+          end
+
+          it('does not crash and falls back to the positional index for the name') do
+            trace = subject.trace
+            expected = {
+              name: 'name',
+              sql: 'select',
+              binds: [{ name: '0', value: 'someone@example.com' }, { name: '1', value: 42 }]
+            }
+            expect(trace.payload).to eq(expected)
+          end
+        end
       end
     end
   end

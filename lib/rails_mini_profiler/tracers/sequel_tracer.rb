@@ -36,7 +36,10 @@ module RailsMiniProfiler
 
       def transform_binds(binds, type_casted_binds)
         binds.each_with_object([]).with_index do |(binding, object), i|
-          name = binding.name
+          # For `where("col = ?", value)`-style queries Rails puts the raw values
+          # themselves in :binds, so `binding` is a String/Integer/etc. rather than
+          # a bind-param object that responds to #name.
+          name = binding.respond_to?(:name) ? binding.name : i.to_s
           value = type_casted_binds[i]
           object << { name: name, value: value }
         end

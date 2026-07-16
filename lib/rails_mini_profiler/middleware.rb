@@ -39,6 +39,11 @@ module RailsMiniProfiler
 
       trace = @trace_factory.create(event)
       traces.append(trace) unless trace.is_a?(RailsMiniProfiler::Tracers::NullTrace)
+    rescue StandardError => e
+      # A tracer must never fail the request it is profiling. Drop the trace and
+      # keep going rather than letting the exception propagate out of the
+      # ActiveSupport::Notifications subscriber.
+      RailsMiniProfiler.logger.error("Rails Mini Profiler could not record a trace: #{e.class}: #{e.message}")
     end
 
     private
