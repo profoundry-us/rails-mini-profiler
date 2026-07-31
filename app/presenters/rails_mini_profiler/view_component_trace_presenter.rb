@@ -17,5 +17,15 @@ module RailsMiniProfiler
     def description
       "Rendered #{label}"
     end
+
+    def content
+      return if identifier.blank?
+
+      content_tag('div') do
+        content_tag('pre', class: 'trace-payload') do
+          content_tag(:div, identifier, class: 'trace-source-path')
+        end
+      end
+    end
   end
 end

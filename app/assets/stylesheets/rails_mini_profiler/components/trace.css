@@ -25,12 +25,22 @@
 }
 
 .render-template-trace .trace-bar,
-.render-partial-trace .trace-bar {
+.render-partial-trace .trace-bar,
+.render-collection-trace .trace-bar,
+.render-layout-trace .trace-bar {
   background: linear-gradient(to top right, var(--blue-500), var(--blue-400));
 }
 
 .view-component-trace .trace-bar {
   background: linear-gradient(to top right, var(--purple-500), var(--purple-400));
+}
+
+.cache-trace .trace-bar {
+  background: linear-gradient(to top right, var(--teal-500), var(--teal-400));
+}
+
+.job-trace .trace-bar {
+  background: linear-gradient(to top right, var(--orange-500), var(--orange-400));
 }
 
 .trace-name {
@@ -53,6 +63,17 @@
   max-height: 100px;
   padding: 1em;
   background: var(--grey-100);
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+/* Full source path (or cache key) shown in the trace popover. */
+.trace-source-path {
+  overflow: auto;
+  max-height: 100px;
+  padding: 1em;
+  background: var(--grey-100);
+  font-size: 12px;
   overflow-wrap: anywhere;
   white-space: pre-wrap;
 }

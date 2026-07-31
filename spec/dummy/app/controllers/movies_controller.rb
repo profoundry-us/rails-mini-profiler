@@ -4,6 +4,9 @@ class MoviesController < ApplicationController
   before_action :set_movie, only: %i[show edit update destroy]
 
   def index
+    # Exercise cache and job instrumentation so the profiler's cache/job tracers have real events to record.
+    @movie_count = Rails.cache.fetch('movies/count', expires_in: 1.minute) { Movie.count }
+    MovieSweepJob.perform_later
     @movies = Movie.all
   end
 

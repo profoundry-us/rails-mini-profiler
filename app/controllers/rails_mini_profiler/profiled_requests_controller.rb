@@ -28,6 +28,7 @@ module RailsMiniProfiler
                   .map { |trace| present(trace, context: context) }
       @total_duration = context[:total_duration]
       @trace_tree = TraceTree.build(@traces)
+      @trace_event_names = registry.tracers.keys - ['rails_mini_profiler.total_time']
       @profiled_request = present(@profiled_request)
     end
 

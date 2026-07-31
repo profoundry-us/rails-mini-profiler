@@ -119,8 +119,19 @@ Rails Mini Profiler provides a wide array of configuration options. You can find
 Rails Mini Profiler builds the trace waterfall from a set of tracers, each subscribing to `ActiveSupport::Notifications` events. The enabled tracers default to:
 
 ```ruby
-config.tracers = %i[controller instantiation sequel view view_component rmp]
+config.tracers = %i[controller instantiation sequel view view_component cache job rmp]
 ```
+
+| Tracer | Events |
+| --- | --- |
+| `controller` | `process_action.action_controller` |
+| `instantiation` | `instantiation.active_record` |
+| `sequel` | `sql.active_record` |
+| `view` | `render_template/partial/collection/layout.action_view` |
+| `view_component` | `render.view_component` (see below) |
+| `cache` | `cache_read/write/fetch_hit/generate/delete[_multi].active_support` — all `Rails.cache` operations |
+| `job` | `enqueue.active_job`, `enqueue_at.active_job` — jobs enqueued during the request (the job's own run happens outside the request and is not traced) |
+| `rmp` | `rails_mini_profiler.total_time` |
 
 #### ViewComponent
 

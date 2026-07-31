@@ -29,14 +29,9 @@
             Clear filter
           </button>
         </div>
-        <% trace_names = %w[
-          process_action.action_controller
-          sql.active_record
-          instantiation.active_record
-          render_template.action_view
-          render_partial.action_view
-        ] %>
-        <% trace_names.each do |name| %>
+        <%# Every event the enabled tracers subscribe to, straight from the registry — new tracers appear
+            here automatically. %>
+        <% @trace_event_names.each do |name| %>
           <%= label_tag nil, class: "dropdown-entry" do %>
             <%= check_box_tag "name[]",
             name,

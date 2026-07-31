@@ -52,6 +52,10 @@ html {
   --blue-500: #3b82f6;
   --purple-400: #a78bfa;
   --purple-500: #8b5cf6;
+  --teal-400: #2dd4bf;
+  --teal-500: #14b8a6;
+  --orange-400: #fb923c;
+  --orange-500: #f97316;
   --main-width: 1056px;
   --primary: var(--red-600);
   --border-color: var(--grey-200);
