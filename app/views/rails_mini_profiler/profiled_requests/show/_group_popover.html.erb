@@ -1,0 +1,42 @@
+<%#
+  Popover for a group node — aggregate statistics over its repeated members. `node` is a
+  RailsMiniProfiler::TraceTree::Node with members; `request_start` is the request's raw start timestamp.
+%>
+<div class="popover" data-popover-target="popover">
+  <section class="popover-header">
+    <h1 class="popover-description"><%= break_opportunities(node.trace.label) %> &times;<%= node.count %></h1>
+    <button class="popover-close">x</button>
+  </section>
+  <section class="popover-body">
+    <table class="trace-details-table">
+      <thead>
+      <tr>
+        <th class="text-left"></th>
+        <th class="text-right">Response Time</th>
+        <th class="text-right">Allocations</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>Total (<%= node.count %> events)</td>
+        <td class="text-right"><%= formatted_duration(node.total_duration) %>ms</td>
+        <td class="text-right"><%= formatted_allocations(node.total_allocations) %></td>
+      </tr>
+      <tr>
+        <td>Min / Avg / Max</td>
+        <td class="text-right">
+          <%= formatted_duration(node.min_duration) %> /
+          <%= formatted_duration(node.avg_duration) %> /
+          <%= formatted_duration(node.max_duration) %>ms
+        </td>
+        <td class="text-right"></td>
+      </tr>
+      <tr>
+        <td>Started</td>
+        <td class="text-right">+<%= ((node.span_start - request_start) / 100.0).round(1) %>ms</td>
+        <td class="text-right"></td>
+      </tr>
+      </tbody>
+    </table>
+  </section>
+</div>

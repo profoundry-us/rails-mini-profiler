@@ -41,7 +41,7 @@
       <div
         class="trace-bar<%= ' trace-bar--span' if node.group? %>"
         style="left: <%= bar_left %>%; width: max(<%= bar_width %>%, 3px)"
-        <%= 'data-popover-target="clickable"'.html_safe unless node.group? %>
+        data-popover-target="clickable"
       ></div>
     </div>
 
@@ -52,7 +52,9 @@
       <span class="trace-node-duration"><%= formatted_duration(node.total_duration) %>ms</span>
     </span>
 
-    <% unless node.group? %>
+    <% if node.group? %>
+      <%= render "rails_mini_profiler/profiled_requests/show/group_popover", node: node, request_start: request_start %>
+    <% else %>
       <%= render "rails_mini_profiler/profiled_requests/show/trace_popover", trace: node.trace %>
     <% end %>
   </div>

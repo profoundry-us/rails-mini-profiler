@@ -20,15 +20,16 @@ module RailsMiniProfiler
       def trace
         return NullTrace.new if ignore?
 
-        payload = @event[:payload].slice(:name, :sql, :binds, :type_casted_binds)
+        # row_count arrived in Rails 7.2; on older versions the key is simply absent.
+        payload = @event[:payload].slice(:name, :sql, :binds, :type_casted_binds, :row_count)
         typecasted_binds = payload[:type_casted_binds]
         # Sometimes, typecasted binds are a proc. Not sure why. In those instances, we extract the typecasted
         # values from the proc by executing call.
         typecasted_binds = typecasted_binds.call if typecasted_binds.respond_to?(:call)
         payload[:binds] = transform_binds(payload[:binds], typecasted_binds)
         payload.delete(:type_casted_binds)
-        payload.reject { |_k, v| v.blank? }
-        @event[:payload] = payload
+        # Keep numeric zeroes (a query legitimately returning 0 rows) but drop absent/empty values.
+        @event[:payload] = payload.reject { |_k, v| v.nil? || (v.respond_to?(:empty?) && v.empty?) }
         super
       end
 

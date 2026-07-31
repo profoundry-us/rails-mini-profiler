@@ -20,13 +20,23 @@ module RailsMiniProfiler
 
     alias description label
 
+    def row_count
+      payload['row_count']
+    end
+
+    # Occurrence stats for this exact SQL across the whole request, provided by the controller — flags
+    # n+1-style repetition.
+    def occurrences
+      @sql_occurrences[sql]
+    end
+
     def content
       return nil if transaction?
 
       content_tag('div') do
         content_tag('pre', class: 'trace-payload') do
           content_tag(:div, sql, class: 'sequel-trace-query')
-        end + binding_content
+        end + binding_content + query_stats_content
       end
     end
 
@@ -76,6 +86,18 @@ module RailsMiniProfiler
         value = hash['value']
         object[name] = value
       end
+    end
+
+    def query_stats_content
+      stats = []
+      stats << "#{row_count} #{'row'.pluralize(row_count)}" if row_count
+      if occurrences && occurrences[:count] > 1
+        total = formatted_duration(occurrences[:total_duration])
+        stats << "⚠ ran #{occurrences[:count]}× in this request (total #{total}ms) — possible n+1"
+      end
+      return nil if stats.empty?
+
+      content_tag(:pre, stats.join(' · '), class: 'trace-query-stats')
     end
   end
 end

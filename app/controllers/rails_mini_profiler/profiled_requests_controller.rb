@@ -17,15 +17,9 @@ module RailsMiniProfiler
 
     def show
       search = TraceSearch.new(show_params, scope: @profiled_request.traces)
-      context = {
-        start: @profiled_request.start,
-        finish: @profiled_request.finish,
-        total_duration: @profiled_request.duration,
-        total_allocations: @profiled_request.allocations
-      }
-      @traces = search.results
-                  .order(:start)
-                  .map { |trace| present(trace, context: context) }
+      traces = search.results.order(:start).to_a
+      context = trace_context(traces)
+      @traces = traces.map { |trace| present(trace, context: context) }
       @total_duration = context[:total_duration]
       @trace_tree = TraceTree.build(@traces)
       @trace_event_names = registry.tracers.keys - ['rails_mini_profiler.total_time']
@@ -72,6 +66,25 @@ module RailsMiniProfiler
 
     def registry
       @registry ||= RailsMiniProfiler::Tracers::Registry.new(configuration)
+    end
+
+    def trace_context(traces)
+      {
+        start: @profiled_request.start,
+        finish: @profiled_request.finish,
+        total_duration: @profiled_request.duration,
+        total_allocations: @profiled_request.allocations,
+        sql_occurrences: sql_occurrences(traces)
+      }
+    end
+
+    # How often each SQL statement ran within this request, keyed by the raw SQL — the presenter uses it to
+    # flag repeated (n+1-style) queries in the trace popover.
+    def sql_occurrences(traces)
+      traces
+        .select { |t| t.name == 'sql.active_record' }
+        .group_by { |t| t.payload['sql'] }
+        .transform_values { |group| { count: group.size, total_duration: group.sum(&:duration) } }
     end
 
     def present(model, presenter_class = nil, **)

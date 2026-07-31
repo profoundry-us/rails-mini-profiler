@@ -8,6 +8,7 @@ module RailsMiniProfiler
       @finish = context[:finish]
       @total_duration = context[:total_duration]
       @total_allocations = context[:total_allocations]
+      @sql_occurrences = context[:sql_occurrences] || {}
     end
 
     def label
@@ -26,6 +27,10 @@ module RailsMiniProfiler
       return if model.backtrace.empty?
 
       model.backtrace.first
+    end
+
+    def full_backtrace
+      Array(model.backtrace)
     end
 
     def type

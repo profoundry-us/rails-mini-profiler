@@ -68,6 +68,20 @@ module RailsMiniProfiler
         traces.map { |t| raw(t, :finish) }.max
       end
 
+      # Duration statistics across the represented traces — meaningful for groups, where they summarize the
+      # spread of the repeated members.
+      def min_duration
+        traces.map { |t| raw(t, :duration) }.min
+      end
+
+      def max_duration
+        traces.map { |t| raw(t, :duration) }.max
+      end
+
+      def avg_duration
+        total_duration / count
+      end
+
       private
 
       # Read a raw numeric attribute. Trace presenters format their +duration+/+allocations+ for display, so

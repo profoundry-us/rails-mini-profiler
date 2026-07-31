@@ -99,6 +99,20 @@ module RailsMiniProfiler
         expect(group.span_finish).to eq(55)
       end
 
+      it 'reports min, avg and max durations across a group' do
+        parent = trace(name: 'render_template.action_view', label: 'index', start: 0, finish: 100)
+        durations = [10, 20, 60]
+        rows = durations.each_with_index.map do |duration, i|
+          trace(name: 'render_partial.action_view', label: '_row', start: 10 + (i * 20), finish: 15 + (i * 20),
+                duration: duration)
+        end
+
+        group = described_class.build([parent, *rows]).first.children.first
+        expect(group.min_duration).to eq(10)
+        expect(group.avg_duration).to eq(30)
+        expect(group.max_duration).to eq(60)
+      end
+
       it 'does not group when siblings are below the threshold' do
         parent = trace(name: 'render_template.action_view', label: 'index', start: 0, finish: 100)
         row = trace(name: 'render_partial.action_view', label: '_row', start: 10, finish: 20)

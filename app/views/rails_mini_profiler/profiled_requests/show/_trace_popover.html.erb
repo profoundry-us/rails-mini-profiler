@@ -23,6 +23,12 @@
             <%= icon('copy') %>
           </button>
         </div>
+        <% if trace.full_backtrace.size > 1 %>
+          <details class="backtrace-details">
+            <summary>Full backtrace (<%= trace.full_backtrace.size %> frames)</summary>
+            <pre><%= break_opportunities(trace.full_backtrace.join("\n")) %></pre>
+          </details>
+        <% end %>
       </section>
     <% end %>
 
@@ -44,6 +50,11 @@
         <td>Relative</td>
         <td class="text-right"><%= trace.duration_percent %>%</td>
         <td class="text-right"><%= trace.allocations_percent %>%</td>
+      </tr>
+      <tr>
+        <td>Started</td>
+        <td class="text-right">+<%= trace.from_start.round(1) %>ms</td>
+        <td class="text-right"></td>
       </tr>
       </tbody>
     </table>

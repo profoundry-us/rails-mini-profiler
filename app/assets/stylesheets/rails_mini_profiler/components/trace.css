@@ -121,6 +121,44 @@
   height: 20px;
 }
 
+.backtrace-details {
+  margin-top: 0.5em;
+}
+
+.backtrace-details summary {
+  color: var(--grey-500);
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.backtrace-details summary:hover {
+  color: var(--grey-700);
+}
+
+.backtrace-details pre {
+  overflow: auto;
+  max-height: 200px;
+  padding: 0.5em 1em;
+  margin: 0.5em 0 0;
+  background: var(--grey-50);
+  font-size: 11px;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+/* Supplementary stats under a popover's main content — row counts, n+1 warnings, request params. */
+.trace-query-stats {
+  overflow: auto;
+  max-height: 120px;
+  padding: 0.5em 1em;
+  margin: 0 0 1em;
+  background: var(--grey-50);
+  color: var(--grey-700);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
 /* --- Trace tree --------------------------------------------------------- */
 
 .trace-tree,
@@ -213,7 +251,6 @@
 /* A group's members are scattered across its span, so its bar is drawn muted: it marks the window,
    not solid work. */
 .trace-bar--span {
-  cursor: default;
   opacity: 0.45;
 }
 

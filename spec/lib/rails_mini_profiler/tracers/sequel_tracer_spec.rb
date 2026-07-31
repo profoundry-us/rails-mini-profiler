@@ -23,8 +23,17 @@ module RailsMiniProfiler
 
         it('should remove payload fields') do
           trace = subject.trace
-          expected = { name: 'name', sql: 'select', binds: [] }
+          expected = { name: 'name', sql: 'select' }
           expect(trace.payload).to eq(expected)
+        end
+
+        context('with a row count') do
+          let(:payload) { { name: 'name', sql: 'select', binds: [], type_casted_binds: [], row_count: 0 } }
+
+          it('keeps the row count, including zero') do
+            trace = subject.trace
+            expect(trace.payload).to eq(name: 'name', sql: 'select', row_count: 0)
+          end
         end
 
         context('with callable binds') do
@@ -39,7 +48,7 @@ module RailsMiniProfiler
 
           it('should create binds') do
             trace = subject.trace
-            expected = { name: 'name', sql: 'select', binds: [] }
+            expected = { name: 'name', sql: 'select' }
             expect(trace.payload).to eq(expected)
           end
         end
