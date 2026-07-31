@@ -26,6 +26,8 @@ module RailsMiniProfiler
       @traces = search.results
                   .order(:start)
                   .map { |trace| present(trace, context: context) }
+      @total_duration = context[:total_duration]
+      @trace_tree = TraceTree.build(@traces)
       @profiled_request = present(@profiled_request)
     end
 

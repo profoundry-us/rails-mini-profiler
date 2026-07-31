@@ -1,16 +1,6 @@
-.trace {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  padding: 0.25em 0;
-  list-style: none;
-}
-
-.trace:nth-child(odd) {
-  background: var(--grey-100);
-}
-
-.trace .trace-bar {
+/* Base trace-bar styling. Per-type rules below (e.g. `.controller-trace .trace-bar`) have higher
+   specificity and override the default gradient with a colour for each tracer. */
+.trace-bar {
   height: 16px;
   padding: 0;
   margin: 0;
@@ -108,4 +98,84 @@
 .backtrace button svg {
   width: 20px;
   height: 20px;
+}
+
+/* --- Trace tree --------------------------------------------------------- */
+
+.trace-tree,
+.trace-node-children {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.trace-node-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 3px 0.75em;
+  padding-left: calc(0.75em + var(--trace-depth, 0) * 1.1em);
+  border-radius: 4px;
+}
+
+.trace-node-row:hover {
+  background: var(--grey-100);
+}
+
+.trace-toggle,
+.trace-toggle-spacer {
+  flex: 0 0 auto;
+  width: 1.1em;
+  height: 1.1em;
+}
+
+.trace-toggle {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--grey-500);
+  font-size: 0.8em;
+  line-height: 1.1em;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.trace-node--expanded > .trace-node-row .trace-toggle {
+  transform: rotate(90deg);
+}
+
+.trace-node-name {
+  overflow: hidden;
+  flex: 0 0 34%;
+  min-width: 0;
+  color: var(--grey-700);
+  font-size: 13px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.trace-node--group > .trace-node-row .trace-node-name {
+  font-weight: 600;
+}
+
+.trace-node-count {
+  padding: 0 0.4em;
+  border-radius: 8px;
+  background: var(--grey-200);
+  color: var(--grey-700);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.trace-node-track {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.trace-node-duration {
+  flex: 0 0 auto;
+  width: 62px;
+  color: var(--grey-500);
+  font-size: 12px;
+  text-align: right;
 }

@@ -1,0 +1,51 @@
+<%#
+  Renders a single node of the trace tree, recursing into its children (or, for a group node, its members).
+  Structural nodes render expanded; group nodes (repeated siblings) render collapsed so they stay compact.
+  `node` is a RailsMiniProfiler::TraceTree::Node; `depth` is the nesting level (0 for roots).
+%>
+<% depth ||= 0 %>
+<% expandable = node.group? || node.children.any? %>
+<% expanded = expandable && !node.group? %>
+<% width = (node.total_duration.to_f / [@total_duration.to_i, 1].max * 100).round(1) %>
+<li class="trace-node <%= node.trace.type %><%= ' trace-node--group' if node.group? %>" style="--trace-depth: <%= depth %>;" data-controller="popover tree">
+  <div class="trace-node-row">
+    <% if expandable %>
+      <button
+        type="button"
+        class="trace-toggle"
+        data-action="tree#toggle"
+        data-tree-target="toggle"
+        aria-expanded="<%= expanded %>"
+        aria-label="Toggle children"
+      >&#9656;</button>
+    <% else %>
+      <span class="trace-toggle-spacer"></span>
+    <% end %>
+
+    <span class="trace-node-name" title="<%= node.trace.label %>">
+      <%= break_opportunities(node.trace.label) %><% if node.group? %> <span class="trace-node-count">&times;<%= node.count %></span><% end %>
+    </span>
+
+    <div class="trace-node-track">
+      <div
+        class="trace-bar"
+        style="width: max(<%= width %>%, 3px)"
+        <%= 'data-popover-target="clickable"'.html_safe unless node.group? %>
+      ></div>
+    </div>
+
+    <span class="trace-node-duration"><%= formatted_duration(node.total_duration) %>ms</span>
+
+    <% unless node.group? %>
+      <%= render "rails_mini_profiler/profiled_requests/show/trace_popover", trace: node.trace %>
+    <% end %>
+  </div>
+
+  <% if expandable %>
+    <ol class="trace-node-children<%= ' hidden' unless expanded %>" data-tree-target="children">
+      <% (node.group? ? node.members : node.children).each do |child| %>
+        <%= render "rails_mini_profiler/profiled_requests/show/trace_node", node: child, depth: depth + 1 %>
+      <% end %>
+    </ol>
+  <% end %>
+</li>

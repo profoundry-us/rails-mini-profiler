@@ -3,9 +3,9 @@
   <% if @traces.empty? %>
     <%= render "rails_mini_profiler/profiled_requests/show/trace_list_placeholder" %>
   <% else %>
-    <ol>
-      <% @traces.each do |trace| %>
-        <%= render "rails_mini_profiler/profiled_requests/show/trace", trace: trace %>
+    <ol class="trace-tree">
+      <% @trace_tree.each do |node| %>
+        <%= render "rails_mini_profiler/profiled_requests/show/trace_node", node: node, depth: 0 %>
       <% end %>
     </ol>
   <% end %>
