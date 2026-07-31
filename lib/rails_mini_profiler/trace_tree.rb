@@ -49,6 +49,25 @@ module RailsMiniProfiler
         group? ? @members.map(&:trace) : [@trace]
       end
 
+      # Time spent in this node itself, outside any instrumented child event — i.e. work no tracer captured
+      # (the controller's own code, framework internals, and so on). Zero for groups: a group's rendered
+      # children are its own members, which sum to its total by definition.
+      def self_duration
+        return 0 if group?
+
+        [raw(@trace, :duration) - children.sum(&:total_duration), 0].max
+      end
+
+      # Earliest start and latest finish across the traces this node represents. For a single trace these are
+      # just its own timestamps; for a group they describe the window its scattered members span.
+      def span_start
+        traces.map { |t| raw(t, :start) }.min
+      end
+
+      def span_finish
+        traces.map { |t| raw(t, :finish) }.max
+      end
+
       private
 
       # Read a raw numeric attribute. Trace presenters format their +duration+/+allocations+ for display, so

@@ -65,6 +65,40 @@ module RailsMiniProfiler
         expect(group.total_allocations).to eq(300)
       end
 
+      it 'computes self duration as own duration minus instrumented children' do
+        action = trace(name: 'process_action.action_controller', label: 'Action', start: 0, finish: 100,
+                       duration: 100)
+        sql = trace(name: 'sql.active_record', label: 'User Load', start: 20, finish: 30, duration: 10)
+        template = trace(name: 'render_template.action_view', label: 'index', start: 40, finish: 70, duration: 30)
+
+        roots = described_class.build([action, sql, template])
+
+        expect(roots.first.self_duration).to eq(60)
+      end
+
+      it 'reports zero self duration for groups and clamps negative values' do
+        parent = trace(name: 'render_template.action_view', label: 'index', start: 0, finish: 100, duration: 10)
+        rows = Array.new(2) do |i|
+          trace(name: 'render_partial.action_view', label: '_row', start: 10 + i, finish: 90 - i, duration: 20)
+        end
+
+        roots = described_class.build([parent, *rows])
+
+        expect(roots.first.self_duration).to eq(0)
+        expect(roots.first.children.first.self_duration).to eq(0)
+      end
+
+      it 'spans a group from its first member start to its last member finish' do
+        parent = trace(name: 'render_template.action_view', label: 'index', start: 0, finish: 100)
+        rows = Array.new(3) do |i|
+          trace(name: 'render_partial.action_view', label: '_row', start: 10 + (i * 20), finish: 15 + (i * 20))
+        end
+
+        group = described_class.build([parent, *rows]).first.children.first
+        expect(group.span_start).to eq(10)
+        expect(group.span_finish).to eq(55)
+      end
+
       it 'does not group when siblings are below the threshold' do
         parent = trace(name: 'render_template.action_view', label: 'index', start: 0, finish: 100)
         row = trace(name: 'render_partial.action_view', label: '_row', start: 10, finish: 20)

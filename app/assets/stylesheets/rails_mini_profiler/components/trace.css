@@ -114,12 +114,22 @@
   align-items: center;
   gap: 0.5em;
   padding: 3px 0.75em;
-  padding-left: calc(0.75em + var(--trace-depth, 0) * 1.1em);
   border-radius: 4px;
 }
 
 .trace-node-row:hover {
   background: var(--grey-100);
+}
+
+/* Indentation lives inside the label column only, so every row's bar track starts at the same x
+   position — bars form one aligned timeline and children render inside their parent's span. */
+.trace-node-label {
+  display: flex;
+  align-items: center;
+  flex: 0 0 36%;
+  gap: 0.5em;
+  min-width: 0;
+  padding-left: calc(var(--trace-depth, 0) * 1.1em);
 }
 
 .trace-toggle,
@@ -146,7 +156,7 @@
 
 .trace-node-name {
   overflow: hidden;
-  flex: 0 0 34%;
+  flex: 1 1 auto;
   min-width: 0;
   color: var(--grey-700);
   font-size: 13px;
@@ -168,13 +178,40 @@
 }
 
 .trace-node-track {
+  position: relative;
   flex: 1 1 auto;
+  height: 16px;
   min-width: 0;
 }
 
-.trace-node-duration {
+.trace-node-track .trace-bar {
+  position: absolute;
+  top: 0;
+}
+
+/* A group's members are scattered across its span, so its bar is drawn muted: it marks the window,
+   not solid work. */
+.trace-bar--span {
+  cursor: default;
+  opacity: 0.45;
+}
+
+.trace-node-meta {
+  display: flex;
+  align-items: baseline;
   flex: 0 0 auto;
-  width: 62px;
+  gap: 0.5em;
+  justify-content: flex-end;
+  min-width: 132px;
+}
+
+.trace-node-self {
+  color: var(--grey-400);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.trace-node-duration {
   color: var(--grey-500);
   font-size: 12px;
   text-align: right;

@@ -1,40 +1,56 @@
 <%#
   Renders a single node of the trace tree, recursing into its children (or, for a group node, its members).
   Structural nodes render expanded; group nodes (repeated siblings) render collapsed so they stay compact.
+
+  The bar tracks share one aligned column (indentation lives in the label column only), and each bar is
+  offset by its start time — so child bars render inside their parent's span, and gaps within a parent's
+  bar are its self time (work no tracer instrumented). Group bars span first-member-start to
+  last-member-finish and are drawn muted, since their members are scattered across that window.
+
   `node` is a RailsMiniProfiler::TraceTree::Node; `depth` is the nesting level (0 for roots).
 %>
 <% depth ||= 0 %>
 <% expandable = node.group? || node.children.any? %>
 <% expanded = expandable && !node.group? %>
-<% width = (node.total_duration.to_f / [@total_duration.to_i, 1].max * 100).round(1) %>
-<li class="trace-node <%= node.trace.type %><%= ' trace-node--group' if node.group? %>" style="--trace-depth: <%= depth %>;" data-controller="popover tree">
+<% request_start = @profiled_request.start.to_i %>
+<% window = [@profiled_request.finish.to_i - request_start, 1].max %>
+<% bar_left = ((node.span_start - request_start) * 100.0 / window).clamp(0, 100).round(2) %>
+<% bar_width = ((node.span_finish - node.span_start) * 100.0 / window).round(2) %>
+<li class="trace-node <%= node.trace.type %><%= ' trace-node--group' if node.group? %><%= ' trace-node--expanded' if expanded %>" style="--trace-depth: <%= depth %>;" data-controller="popover tree">
   <div class="trace-node-row">
-    <% if expandable %>
-      <button
-        type="button"
-        class="trace-toggle"
-        data-action="tree#toggle"
-        data-tree-target="toggle"
-        aria-expanded="<%= expanded %>"
-        aria-label="Toggle children"
-      >&#9656;</button>
-    <% else %>
-      <span class="trace-toggle-spacer"></span>
-    <% end %>
+    <span class="trace-node-label">
+      <% if expandable %>
+        <button
+          type="button"
+          class="trace-toggle"
+          data-action="tree#toggle"
+          data-tree-target="toggle"
+          aria-expanded="<%= expanded %>"
+          aria-label="Toggle children"
+        >&#9656;</button>
+      <% else %>
+        <span class="trace-toggle-spacer"></span>
+      <% end %>
 
-    <span class="trace-node-name" title="<%= node.trace.label %>">
-      <%= break_opportunities(node.trace.label) %><% if node.group? %> <span class="trace-node-count">&times;<%= node.count %></span><% end %>
+      <span class="trace-node-name" title="<%= node.trace.label %>">
+        <%= break_opportunities(node.trace.label) %><% if node.group? %> <span class="trace-node-count">&times;<%= node.count %></span><% end %>
+      </span>
     </span>
 
     <div class="trace-node-track">
       <div
-        class="trace-bar"
-        style="width: max(<%= width %>%, 3px)"
+        class="trace-bar<%= ' trace-bar--span' if node.group? %>"
+        style="left: <%= bar_left %>%; width: max(<%= bar_width %>%, 3px)"
         <%= 'data-popover-target="clickable"'.html_safe unless node.group? %>
       ></div>
     </div>
 
-    <span class="trace-node-duration"><%= formatted_duration(node.total_duration) %>ms</span>
+    <span class="trace-node-meta">
+      <% if !node.group? && node.children.any? && node.self_duration >= 100 %>
+        <span class="trace-node-self" title="Time not covered by any instrumented child event">self <%= formatted_duration(node.self_duration) %>ms</span>
+      <% end %>
+      <span class="trace-node-duration"><%= formatted_duration(node.total_duration) %>ms</span>
+    </span>
 
     <% unless node.group? %>
       <%= render "rails_mini_profiler/profiled_requests/show/trace_popover", trace: node.trace %>
