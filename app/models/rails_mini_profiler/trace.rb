@@ -7,8 +7,8 @@
 #  id                      :integer          not null, primary key
 #  rmp_profiled_request_id :integer          not null
 #  name                    :string
-#  start                   :integer
-#  finish                  :integer
+#  start                   :bigint
+#  finish                  :bigint
 #  duration                :integer
 #  allocations             :integer
 #  payload                 :json

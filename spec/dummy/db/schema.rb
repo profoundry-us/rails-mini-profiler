@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 20_210_731_132_836) do
+ActiveRecord::Schema[8.0].define(version: 20_260_730_120_000) do
   create_table 'movies', force: :cascade do |t|
     t.string 'imdb_id'
     t.decimal 'popularity', precision: 5, scale: 2
@@ -24,7 +24,7 @@ ActiveRecord::Schema[8.0].define(version: 20_210_731_132_836) do
   end
 
   create_table 'rmp_flamegraphs', force: :cascade do |t|
-    t.bigint 'rmp_profiled_request_id', null: false
+    t.integer 'rmp_profiled_request_id', null: false
     t.binary 'data'
     t.datetime 'created_at', null: false
     t.datetime 'updated_at', null: false
@@ -52,7 +52,7 @@ ActiveRecord::Schema[8.0].define(version: 20_210_731_132_836) do
   end
 
   create_table 'rmp_traces', force: :cascade do |t|
-    t.bigint 'rmp_profiled_request_id', null: false
+    t.integer 'rmp_profiled_request_id', null: false
     t.string 'name'
     t.bigint 'start'
     t.bigint 'finish'

@@ -18,13 +18,18 @@ module RailsMiniProfiler
           Tracer.new(@event)
         end
 
-        it('stores starts and ends as milliseconds') do
+        it('stores duration in hundredths of a millisecond') do
           expect(subject.trace.duration).to be_within(5).of(@event.duration * 100)
         end
 
-        it('stores start and ends as microseconds') do
-          expect(subject.trace.start).to be_within(100).of(@event.time.to_f * 100)
-          expect(subject.trace.finish).to be_within(100).of(@event.end.to_f * 100)
+        it('stores start and finish in hundredths of a millisecond') do
+          expect(subject.trace.start).to be_within(5).of(@event.time.to_f * Tracer::TIMESTAMP_MULTIPLIER)
+          expect(subject.trace.finish).to be_within(5).of(@event.end.to_f * Tracer::TIMESTAMP_MULTIPLIER)
+        end
+
+        it('stores timestamps and duration in the same unit') do
+          trace = subject.trace
+          expect(trace.finish - trace.start).to be_within(10).of(trace.duration)
         end
 
         it('captures a backtrace by default') do
