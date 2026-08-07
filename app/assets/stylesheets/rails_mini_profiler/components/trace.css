@@ -181,10 +181,13 @@
 }
 
 /* Indentation lives inside the label column only, so every row's bar track starts at the same x
-   position — bars form one aligned timeline and children render inside their parent's span. */
+   position — bars form one aligned timeline and children render inside their parent's span.
+   box-sizing matters: without it the depth padding adds to the 36% basis, shifting and shrinking
+   every deeper row's track so bars at different depths no longer share one time axis. */
 .trace-node-label {
   display: flex;
   align-items: center;
+  box-sizing: border-box;
   flex: 0 0 36%;
   gap: 0.5em;
   min-width: 0;
@@ -248,10 +251,14 @@
   top: 0;
 }
 
-/* A group's members are scattered across its span, so its bar is drawn muted: it marks the window,
-   not solid work. */
+/* A group's members are scattered across its span, so its bar is drawn as a faint window with solid
+   ticks marking where each member actually ran — width reads as work, the window shows the spread. */
 .trace-bar--span {
-  opacity: 0.45;
+  opacity: 0.25;
+}
+
+.trace-bar--tick {
+  pointer-events: none;
 }
 
 .trace-node-meta {

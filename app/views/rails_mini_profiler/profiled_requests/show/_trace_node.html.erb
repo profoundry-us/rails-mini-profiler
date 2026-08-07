@@ -40,9 +40,20 @@
     <div class="trace-node-track">
       <div
         class="trace-bar<%= ' trace-bar--span' if node.group? %>"
-        style="left: <%= bar_left %>%; width: max(<%= bar_width %>%, 3px)"
+        style="left: min(<%= bar_left %>%, calc(100% - 3px)); width: max(<%= bar_width %>%, 3px)"
         data-popover-target="clickable"
       ></div>
+      <% if node.group? %>
+        <%# Solid ticks mark where each member actually ran (and how long), inside the faint window. %>
+        <% node.members.each do |member| %>
+          <% tick_left = ((member.span_start - request_start) * 100.0 / window).clamp(0, 100).round(2) %>
+          <% tick_width = ((member.span_finish - member.span_start) * 100.0 / window).round(2) %>
+          <div
+            class="trace-bar trace-bar--tick"
+            style="left: min(<%= tick_left %>%, calc(100% - 2px)); width: max(<%= tick_width %>%, 2px)"
+          ></div>
+        <% end %>
+      <% end %>
     </div>
 
     <span class="trace-node-meta">

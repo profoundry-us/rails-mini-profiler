@@ -148,6 +148,11 @@ config.view_component.use_deprecated_instrumentation_name = false
 
 Without ViewComponent (or with instrumentation off) the tracer is simply idle. Apps that don't use ViewComponent can drop it from `config.tracers`.
 
+When ViewComponent is present, Rails Mini Profiler also captures the arguments each component was constructed
+with (compact and truncated — basic values kept as-is, everything else inspected) and shows them in the trace
+popover, so you can tell *which* `IconComponent` a trace belongs to. Disable with
+`config.view_component_props_enabled = false`.
+
 #### Backtraces
 
 Every trace captures a backtrace (used by the "source" section of the trace detail view). On component-heavy pages this capture (`Kernel#caller` plus the backtrace cleaner) adds measurable overhead that can skew the reported timings. Set `config.backtraces_enabled = false` for more honest numbers; the trace detail view simply omits the backtrace section.

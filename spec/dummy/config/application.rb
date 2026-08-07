@@ -29,5 +29,12 @@ module Dummy
     #
     # config.eager_load_paths << Rails.root.join("extras")
     config.database = ENV.fetch('DATABASE', :sqlite).to_sym
+
+    if defined?(ViewComponent)
+      # ViewComponent instrumentation is off by default and only emits the modern event name when the
+      # deprecated one is disabled — both required for the view_component tracer.
+      config.view_component.instrumentation_enabled = true
+      config.view_component.use_deprecated_instrumentation_name = false
+    end
   end
 end

@@ -41,5 +41,19 @@ module RailsMiniProfiler
         expect(subject.type).to eq('view-component-trace')
       end
     end
+
+    describe 'content' do
+      let(:trace) do
+        Trace.new(payload: { 'name' => 'BadgeComponent',
+                             'identifier' => '/app/components/badge_component.rb',
+                             'props' => { 'label' => 'recent', 'count' => 3 } })
+      end
+
+      it 'shows the captured props' do
+        expect(subject.content).to include('label: &quot;recent&quot;')
+        expect(subject.content).to include('count: 3')
+        expect(subject.content).to include('/app/components/badge_component.rb')
+      end
+    end
   end
 end

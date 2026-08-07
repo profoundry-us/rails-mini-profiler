@@ -8,6 +8,7 @@ require 'rails_mini_profiler/engine'
 require 'rails_mini_profiler/models/base_model'
 require 'rails_mini_profiler/tracers'
 require 'rails_mini_profiler/trace_tree'
+require 'rails_mini_profiler/view_component_props'
 require 'rails_mini_profiler/configuration'
 require 'rails_mini_profiler/pagination'
 

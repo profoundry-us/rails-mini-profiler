@@ -25,6 +25,10 @@ module RailsMiniProfiler
 
       def trace
         @event[:payload].slice!(:name, :identifier)
+        # The notification payload only carries the class name and identifier; the constructor arguments are
+        # captured by ViewComponentProps around the render that is finishing right now.
+        props = ViewComponentProps.current
+        @event[:payload][:props] = props if props.present?
         super
       end
     end

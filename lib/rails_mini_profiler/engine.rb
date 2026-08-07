@@ -15,6 +15,17 @@ module RailsMiniProfiler
       app.middleware.use(RailsMiniProfiler::Middleware)
     end
 
+    initializer 'rails_mini_profiler.view_component_props' do |app|
+      # Installed in to_prepare (not the :view_component load hook) so our render_in wrapper is prepended
+      # AFTER ViewComponent's own Instrumentation module and therefore wraps outside it — the notification
+      # finishes (and the tracer reads the props stack) while our push is still in place. Prepends are
+      # idempotent, so re-running on reload is safe; capture itself is gated by
+      # config.view_component_props_enabled.
+      app.config.to_prepare do
+        RailsMiniProfiler::ViewComponentProps.install(ViewComponent::Base) if defined?(ViewComponent::Base)
+      end
+    end
+
     config.generators do |g|
       g.test_framework :rspec
     end

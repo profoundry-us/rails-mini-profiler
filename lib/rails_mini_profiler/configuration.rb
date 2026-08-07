@@ -39,7 +39,8 @@ module RailsMiniProfiler
                   :storage,
                   :tracers,
                   :ui,
-                  :user_provider
+                  :user_provider,
+                  :view_component_props_enabled
 
     def initialize(**kwargs)
       reset
@@ -56,6 +57,7 @@ module RailsMiniProfiler
       @skip_paths = []
       @storage = Storage.new
       @tracers = %i[controller instantiation sequel view view_component cache job rmp]
+      @view_component_props_enabled = true
       @ui = UserInterface.new
       @user_provider = proc { |env| Rack::Request.new(env).ip }
     end

@@ -23,6 +23,21 @@ module RailsMiniProfiler
         it('subscribes to the modern render.view_component event') do
           expect(described_class.subscribes_to).to eq('render.view_component')
         end
+
+        context('with captured props') do
+          after { Thread.current[ViewComponentProps::THREAD_KEY] = nil }
+
+          it('merges the current render props into the payload') do
+            ViewComponentProps.stack.push({ 'icon' => 'cog', 'css' => 'size-5' })
+            trace = subject.trace
+            expect(trace.payload[:props]).to eq('icon' => 'cog', 'css' => 'size-5')
+          end
+
+          it('omits props when none were captured') do
+            trace = subject.trace
+            expect(trace.payload).not_to have_key(:props)
+          end
+        end
       end
     end
   end

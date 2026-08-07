@@ -2,6 +2,13 @@
 
 <h1>Movies</h1>
 
+<% if defined?(BadgeComponent) %>
+  <%# Exercises the view_component tracer + props capture: repeated renders group in the trace tree. %>
+  <%= render BadgeComponent.new(label: "#{@movie_count} movies", css: 'badge-primary') %>
+  <%= render BadgeComponent.new(label: 'popular', css: 'badge-accent') %>
+  <%= render BadgeComponent.new(label: 'recent') %>
+<% end %>
+
 <table>
   <thead>
     <tr>

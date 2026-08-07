@@ -22,6 +22,8 @@ group :test, :development do
   gem 'rubocop'
   gem 'sqlite3'
   gem 'stackprof'
+  # Exercises the view_component tracer and props capture in the dummy app.
+  gem 'view_component'
 end
 
 group :test do
